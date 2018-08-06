@@ -15,18 +15,18 @@ export default class Addscreen extends Component {
       <Container>
         <Headers navigation={this.props.navigation} handleClick={handleClick}/>
         <Content>
-          <Form>
+          <Form style={{marginRight:20, marginLeft:5}}>
             <Item stackedLabel>
               <Label>Nama</Label>
-              <Input onChangeText={handleName}/>
+              <Input onChangeText={handleName} required/>
             </Item>
-            <Item stackedLabel last>
+            <Item stackedLabel>
               <Label>Email</Label>
-              <Input onChangeText={handleEmail}/>
+              <Input onChangeText={handleEmail} required/>
             </Item>
-            <Item stackedLabel last>
+            <Item stackedLabel>
               <Label>Nomor</Label>
-              <Input onChangeText={handleNomor}/>
+              <Input onChangeText={handleNomor} required/>
             </Item>
           </Form>
         </Content>

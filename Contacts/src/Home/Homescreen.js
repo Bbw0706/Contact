@@ -6,8 +6,8 @@ import axios from "axios";
 import ListItems from "./component/ListItems"
 
 export default class Homescreen extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state = {
       data : [],
@@ -49,8 +49,40 @@ export default class Homescreen extends Component {
   }
 
   handleClick = () => {
-    alert(this.state.nama)
+    const {nama, email, nomor} = this.state;
+    axios.post('http://192.168.0.23:5000/contact', {
+      nama,email,nomor
+    })
+    .then((response) => {
+      const newData = this.state.data.concat(response.data);
+      this.setState({
+        data : newData,
+        nama : "",
+        email : "",
+        nomor : ""
+      })
+      this.props.navigation.popToTop()
+    })
+    .catch((error) => {
+      throw error
+    });
   }
+
+  handleDelete = (id, index) => {
+    axios.delete(`http://192.168.0.23:5000/contact/${id}`)
+    .then(res => {
+      const newData = this.state.data.concat();
+      newData.splice(index, 1);
+
+      this.setState({
+        data : newData
+      })
+    })
+    .catch(err => {
+      throw err;
+    });
+  }
+
 
   render() {
     const {nama, email,nomor} = this.state
@@ -63,7 +95,10 @@ export default class Homescreen extends Component {
         
         <View style={{flex: 1}}>
           <Content>
-            <ListItems data={this.state.data}/>
+            <ListItems 
+              data={this.state.data}
+              handleDelete={this.handleDelete}
+            />
           </Content>
         </View>
 
