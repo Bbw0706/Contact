@@ -4,6 +4,12 @@ import {FlatList, Alert} from "react-native"
 
 export default class ListItems extends Component {
   render() {
+    const {
+      handleName,
+      handleEdit, 
+      handleEmail, 
+      handleNomor
+      } = this.props;
     return (
     <List>
       <FlatList
@@ -11,9 +17,16 @@ export default class ListItems extends Component {
         keyExtractor={(item, index) => item._id}
         renderItem={({item, index}) => (
           <ListItem 
+            style={{marginRight:20}}
             avatar 
             key={index}
-            onPress = {() => alert("Clicked")} 
+            onPress = {() => this.props.navigation.navigate("Edit", {
+                                                                      id : item._id,
+                                                                      handleName,
+                                                                      handleEdit,
+                                                                      handleEmail,
+                                                                      handleNomor
+                                                                    })} 
             onLongPress={() => Alert.alert(
               'Are you sure',
               'you want to delete this contact ?',
@@ -28,7 +41,7 @@ export default class ListItems extends Component {
             </Left>
             <Body>
               <Text>{item.nama}</Text>
-              <Text note>{item.email}</Text>
+              <Text note>{item.email.toLowerCase()}</Text>
               <Text note>{item.nomor}</Text>
             </Body>
           </ListItem>

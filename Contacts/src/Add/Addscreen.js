@@ -7,13 +7,13 @@ export default class Addscreen extends Component {
   render() {
     const {
           handleName,
-          handleClick, 
+          handlePostClick, 
           handleEmail, 
           handleNomor
           } = this.props.navigation.state.params
     return (
       <Container>
-        <Headers navigation={this.props.navigation} handleClick={handleClick}/>
+        <Headers navigation={this.props.navigation} handlePostClick={handlePostClick}/>
         <Content>
           <Form style={{marginRight:20, marginLeft:5}}>
             <Item stackedLabel>

@@ -48,7 +48,7 @@ export default class Homescreen extends Component {
     })
   }
 
-  handleClick = () => {
+  handlePostClick = () => {
     const {nama, email, nomor} = this.state;
     axios.post('http://192.168.0.23:5000/contact', {
       nama,email,nomor
@@ -83,6 +83,25 @@ export default class Homescreen extends Component {
     });
   }
 
+  handleEdit = (id) => {
+    const {nama, email, nomor} = this.state;
+    axios.put(`http://192.168.0.23:5000/contact/${id}`, {
+      nama,email,nomor
+    })
+    .then((response) => {
+      this.setState({
+        data : response.data,
+        nama : "",
+        email : "",
+        nomor : ""
+      })
+      this.props.navigation.popToTop()
+    })
+    .catch((error) => {
+      throw error
+    });
+  }
+
 
   render() {
     const {nama, email,nomor} = this.state
@@ -96,8 +115,13 @@ export default class Homescreen extends Component {
         <View style={{flex: 1}}>
           <Content>
             <ListItems 
+              {...this.props}
               data={this.state.data}
               handleDelete={this.handleDelete}
+              handleName={this.handleName}
+              handleEmail={this.handleEmail}
+              handleNomor={this.handleNomor}
+              handleEdit={this.handleEdit}
             />
           </Content>
         </View>
@@ -106,11 +130,8 @@ export default class Homescreen extends Component {
             style={{ backgroundColor: '#1e88e5' }}
             position="bottomRight"
             onPress={() => this.props.navigation.navigate("Add", {
-                                                                  nama, 
-                                                                  email, 
-                                                                  nomor, 
                                                                   handleName:this.handleName, 
-                                                                  handleClick:this.handleClick,
+                                                                  handlePostClick:this.handlePostClick,
                                                                   handleNomor:this.handleNomor,
                                                                   handleEmail:this.handleEmail
                                                                 })}>

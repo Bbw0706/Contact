@@ -24,7 +24,7 @@ router.put("/:id", (req,res) => {
 													nomor : req.body.nomor
 	}})
 	.then(data => {
-		User.findById({_id : req.params.id})
+		User.find({})
 		.then(data => res.send(data))
 	})
 })
