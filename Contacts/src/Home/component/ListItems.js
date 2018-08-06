@@ -11,7 +11,7 @@ export default class ListItems extends Component {
       handleNomor
       } = this.props;
     return (
-    <List>
+    <List style={{marginTop:10}}>
       <FlatList
         data={this.props.data}
         keyExtractor={(item, index) => item._id}

@@ -39,7 +39,7 @@ export default class Editscreen extends Component {
       <Container>
         <Headers navigation={this.props.navigation} handleEdit={handleEdit} id={id}/>
         <Content>
-          <List>
+          <List style={{marginTop:10}}>
           <FlatList
               data={this.state.data}
               keyExtractor={(item, index) => item._id}
