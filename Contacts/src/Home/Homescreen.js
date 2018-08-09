@@ -125,7 +125,14 @@ export default class Homescreen extends Component {
     if(this.state.loading === false) return null;
 
     return (
-        <Spinner color='#1e88e5' />
+        <View>
+          <Spinner color='#1e88e5' />
+          <Text 
+            style={{color:"#aaa", fontSize:12, textAlign:'center', bottom:10}}
+          >
+            Load more data
+          </Text>
+        </View>
     )
   }
 

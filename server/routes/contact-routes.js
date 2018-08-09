@@ -3,7 +3,7 @@ const User = require('../models/User')
 
 router.get("/:id", (req,res) => {
 	const id = req.params.id;
-	User.paginate({}, { page: id, limit: 6 })
+	User.paginate({}, { page: id, limit: 6 , sort:{nama:1}})
 	.then(result => res.send(result.docs))
 })
 
