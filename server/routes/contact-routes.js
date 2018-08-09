@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const User = require('../models/User')
 
-router.get("/", (req,res) => {
-	User.find({})
-	.then(data => res.send(data))
+router.get("/:id", (req,res) => {
+	const id = req.params.id;
+	User.paginate({}, { page: id, limit: 6 })
+	.then(result => res.send(result.docs))
 })
 
 router.post("/", (req,res) => {
@@ -12,12 +13,12 @@ router.post("/", (req,res) => {
 })
 
 
-router.get("/:id", (req,res) => {
+router.get("/edit/:id", (req,res) => {
 	User.findById({_id : req.params.id})
 	.then(data => res.send(data))
 })
 
-router.put("/:id", (req,res) => {
+router.put("/edit/:id", (req,res) => {
 	User.findByIdAndUpdate({_id : req.params.id}, { $set: { 
 													nama: req.body.nama, 
 													email : req.body.email,  

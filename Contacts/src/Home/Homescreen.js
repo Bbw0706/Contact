@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, View, StatusBar} from 'react-native';
-import {Content, Fab, Button, Text, Icon} from "native-base"
+import {Content, Fab, Button, Text, Icon, Spinner} from "native-base"
 import axios from "axios";
 
 import ListItems from "./component/ListItems"
@@ -13,21 +13,32 @@ export default class Homescreen extends Component {
       data : [],
       nama : "",
       nomor: "",
-      email: ""
+      email: "",
+      page : 1,
+      loading: false
     }
   }
 
-  componentDidMount(){
-    axios.get("http://192.168.0.23:5000/contact")
-    .then(res => {
-      const newData = this.state.data.concat(res.data);
-      this.setState({
-        data : newData
+  makeRemoteRequest = () => {
+    const {page} = this.state
+    this.setState({loading:true})
+    setTimeout(() => {
+      axios.get(`http://192.168.0.23:5000/contact/${page}`)
+      .then(res => {
+        const newData = this.state.data.concat(res.data);
+        this.setState({
+          loading:false,
+          data : newData
+        })
       })
-    })
-    .catch(err => {
-      throw err;
-    });
+      .catch(err => {
+        throw err;
+      });
+    }, 1500)
+  }
+
+  componentDidMount(){
+    this.makeRemoteRequest()
   } 
 
   handleName = (val) => {
@@ -85,7 +96,7 @@ export default class Homescreen extends Component {
 
   handleEdit = (id) => {
     const {nama, email, nomor} = this.state;
-    axios.put(`http://192.168.0.23:5000/contact/${id}`, {
+    axios.put(`http://192.168.0.23:5000/contact/edit/${id}`, {
       nama,email,nomor
     })
     .then((response) => {
@@ -102,6 +113,21 @@ export default class Homescreen extends Component {
     });
   }
 
+  handleLoadMore = () => {
+    this.setState({
+      page : this.state.page + 1
+    }, () => {
+      this.makeRemoteRequest()
+    })
+  }
+
+  renderFooter = () => {
+    if(this.state.loading === false) return null;
+
+    return (
+        <Spinner color='#1e88e5' />
+    )
+  }
 
   render() {
     const {nama, email,nomor} = this.state
@@ -111,9 +137,8 @@ export default class Homescreen extends Component {
           backgroundColor="#1e88e5"
           barStyle="light-content"
         />
-        
+
         <View style={{flex: 1}}>
-          <Content>
             <ListItems 
               {...this.props}
               data={this.state.data}
@@ -122,8 +147,9 @@ export default class Homescreen extends Component {
               handleEmail={this.handleEmail}
               handleNomor={this.handleNomor}
               handleEdit={this.handleEdit}
+              handleLoadMore={this.handleLoadMore}
+              renderFooter={this.renderFooter}
             />
-          </Content>
         </View>
 
         <Fab

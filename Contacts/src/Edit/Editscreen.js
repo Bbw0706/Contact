@@ -14,11 +14,14 @@ export default class Editscreen extends Component {
   }
 
   componentDidMount(){
-    axios.get(`http://192.168.0.23:5000/contact/${this.props.navigation.state.params.id}`)
+    axios.get(`http://192.168.0.23:5000/contact/edit/${this.props.navigation.state.params.id}`)
     .then(res => {
       const newData = this.state.data.concat(res.data);
       this.setState({
-        data : newData
+        data : newData,
+        nama : res.data.nama,
+        nomor : res.data.nomor,
+        email : res.data.email
       })
     })
     .catch(err => {

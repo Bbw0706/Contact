@@ -8,13 +8,18 @@ export default class ListItems extends Component {
       handleName,
       handleEdit, 
       handleEmail, 
-      handleNomor
+      handleNomor,
+      handleLoadMore,
+      renderFooter
       } = this.props;
     return (
     <List style={{marginTop:10}}>
       <FlatList
         data={this.props.data}
         keyExtractor={(item, index) => item._id}
+        ListFooterComponent={renderFooter()}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
         renderItem={({item, index}) => (
           <ListItem 
             style={{marginRight:20}}
