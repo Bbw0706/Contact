@@ -1,6 +1,17 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, View, StatusBar} from 'react-native';
-import {Content, Fab, Button, Text, Icon, Spinner} from "native-base"
+import {Alert,Platform, StyleSheet, View, StatusBar} from 'react-native';
+import {
+  Content, 
+  Fab, 
+  Button, 
+  Icon, 
+  Spinner, 
+  ListItem, 
+  Left, 
+  Body, 
+  Right, 
+  Thumbnail, 
+  Text } from "native-base"
 import axios from "axios";
 
 import ListItems from "./component/ListItems"
@@ -11,19 +22,18 @@ export default class Homescreen extends Component {
 
     this.state = {
       data : [],
-      nama : "",
-      nomor: "",
-      email: "",
       page : 1,
+      perpage : 7,
+      sort:1,
       loading: false
     }
   }
 
   makeRemoteRequest = () => {
-    const {page} = this.state
+    const {page,perpage,sort} = this.state
     this.setState({loading:true})
     setTimeout(() => {
-      axios.get(`http://192.168.0.23:5000/contact/${page}`)
+      axios.get(`http://192.168.0.23:5000/contact/?page=${page}&perpage=${perpage}&sort=${sort}`)
       .then(res => {
         const newData = this.state.data.concat(res.data);
         this.setState({
@@ -41,36 +51,15 @@ export default class Homescreen extends Component {
     this.makeRemoteRequest()
   } 
 
-  handleName = (val) => {
-    this.setState({
-      nama : val
-    })
-  }
 
-  handleNomor = (val) => {
-    this.setState({
-      nomor : val
-    })
-  }
-
-  handleEmail = (val) => {
-    this.setState({
-      email : val
-    })
-  }
-
-  handlePostClick = () => {
-    const {nama, email, nomor} = this.state;
+  handlePostClick = (nama, email, nomor) => {
     axios.post('http://192.168.0.23:5000/contact', {
       nama,email,nomor
     })
     .then((response) => {
       const newData = this.state.data.concat(response.data);
       this.setState({
-        data : newData,
-        nama : "",
-        email : "",
-        nomor : ""
+        data : newData
       })
       this.props.navigation.popToTop()
     })
@@ -94,17 +83,13 @@ export default class Homescreen extends Component {
     });
   }
 
-  handleEdit = (id) => {
-    const {nama, email, nomor} = this.state;
+  handleEdit = (nama,email,nomor,id) => {
     axios.put(`http://192.168.0.23:5000/contact/edit/${id}`, {
       nama,email,nomor
     })
     .then((response) => {
       this.setState({
         data : response.data,
-        nama : "",
-        email : "",
-        nomor : ""
       })
       this.props.navigation.popToTop()
     })
@@ -136,6 +121,40 @@ export default class Homescreen extends Component {
     )
   }
 
+  renderList = (item,index) => {
+    return(
+      <ListItem 
+            style={{marginRight:20}}
+            avatar 
+            key={index}
+            onPress = {
+              () => this.props.navigation.navigate("Edit", {
+                                                            id : item._id,
+                                                            handleEdit : this.handleEdit
+                                                           }
+                                                  )
+            } 
+            onLongPress={() => Alert.alert(
+              'Are you sure',
+              'you want to delete this contact ?',
+              [
+                {text: 'Cancel', onPress: () => null},
+                {text: 'OK', onPress: () => this.handleDelete(item._id, index)},
+              ],
+              { cancelable: false }
+            )}>
+            <Left>
+              <Thumbnail style={{backgroundColor:"#1e88e5"}} source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Gnome-stock_person.svg/1024px-Gnome-stock_person.svg.png' }} />
+            </Left>
+            <Body>
+              <Text>{item.nama}</Text>
+              <Text note>{item.email.toLowerCase()}</Text>
+              <Text note>{item.nomor}</Text>
+            </Body>
+          </ListItem>
+    )
+  }
+
   render() {
     const {nama, email,nomor} = this.state
     return (
@@ -150,12 +169,10 @@ export default class Homescreen extends Component {
               {...this.props}
               data={this.state.data}
               handleDelete={this.handleDelete}
-              handleName={this.handleName}
-              handleEmail={this.handleEmail}
-              handleNomor={this.handleNomor}
               handleEdit={this.handleEdit}
               handleLoadMore={this.handleLoadMore}
               renderFooter={this.renderFooter}
+              renderList = {this.renderList}
             />
         </View>
 
@@ -163,10 +180,7 @@ export default class Homescreen extends Component {
             style={{ backgroundColor: '#1e88e5' }}
             position="bottomRight"
             onPress={() => this.props.navigation.navigate("Add", {
-                                                                  handleName:this.handleName, 
-                                                                  handlePostClick:this.handlePostClick,
-                                                                  handleNomor:this.handleNomor,
-                                                                  handleEmail:this.handleEmail
+                                                                  handlePostClick:this.handlePostClick
                                                                 })}>
             <Icon type="FontAwesome" name="pencil" />
         </Fab>

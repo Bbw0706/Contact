@@ -9,7 +9,10 @@ export default class Editscreen extends Component {
     super(props)
 
     this.state = {
-      data : []
+      data : [],
+      nama : "", 
+      nomor : "",
+      email : ""
     }
   }
 
@@ -29,18 +32,39 @@ export default class Editscreen extends Component {
     });
   }
 
-  render() {
-    const {
-      id,
-      handleName,
-      handleEdit, 
-      handleEmail, 
-      handleNomor
-      } = this.props.navigation.state.params;
+  handleName = (val) => {
+    this.setState({
+      nama : val
+    })
+  }
 
+  handleNomor = (val) => {
+    this.setState({
+      nomor : val
+    })
+  }
+
+  handleEmail = (val) => {
+    this.setState({
+      email : val
+    })
+  }
+
+  handleEdit = (id) => {
+    const {nama,email,nomor} = this.state;
+    this.props.navigation.state.params.handleEdit(nama,email,nomor,id)
+    this.setState({
+      nama : "",
+      nomor : "",
+      email : ""
+    })
+  }
+
+  render() {
+    const {id} = this.props.navigation.state.params
     return (
       <Container>
-        <Headers navigation={this.props.navigation} handleEdit={handleEdit} id={id}/>
+        <Headers navigation={this.props.navigation} handleEdit={this.handleEdit} id={id}/>
         <Content>
           <List style={{marginTop:10}}>
           <FlatList
@@ -69,15 +93,15 @@ export default class Editscreen extends Component {
           <Form style={{marginRight:20, marginLeft:5}}>
             <Item stackedLabel>
               <Label>Nama</Label>
-              <Input onChangeText={handleName}/>
+              <Input value={this.state.nama} onChangeText={this.handleName}/>
             </Item>
             <Item stackedLabel>
               <Label>Email</Label>
-              <Input onChangeText={handleEmail}/>
+              <Input value={this.state.email} onChangeText={this.handleEmail}/>
             </Item>
             <Item stackedLabel>
               <Label>Nomor</Label>
-              <Input onChangeText={handleNomor}/>
+              <Input value={this.state.nomor} onChangeText={this.handleNomor}/>
             </Item>
           </Form>
         </Content>

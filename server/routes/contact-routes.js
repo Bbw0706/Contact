@@ -1,10 +1,14 @@
 const router = require('express').Router();
 const User = require('../models/User')
 
-router.get("/:id", (req,res) => {
-	const id = req.params.id;
-	User.paginate({}, { page: id, limit: 6 , sort:{nama:1}})
+router.get("/", (req,res) => {
+	const {page, perpage,sort} = req.query;
+
+
+	User.paginate({}, { page: parseInt(page, 10), limit: parseInt(perpage, 10) , sort:{nama: parseInt(sort)}})
 	.then(result => res.send(result.docs))
+	// console.log(req.query.page)
+	// res.send("AAAA");
 })
 
 router.post("/", (req,res) => {
