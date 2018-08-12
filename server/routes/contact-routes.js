@@ -29,7 +29,7 @@ router.put("/edit/:id", (req,res) => {
 													nomor : req.body.nomor
 	}})
 	.then(data => {
-		User.find({})
+		User.find({}).sort({nama: 1})
 		.then(data => res.send(data))
 	})
 })

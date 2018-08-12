@@ -14,7 +14,7 @@ const app = express();
 //Middleware
 app.use(bodyParser.json())
 
-//Routes
+//Routes Middleware
 app.use("/contact", contactroutes)
 
 
